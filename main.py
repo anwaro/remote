@@ -1,7 +1,7 @@
-# from lib.window import Window
 from lib.logger import Logger
 from lib.mainloop import MainLoop
 from lib.usb import Usb
+from lib.action import Action
 
 
 class RemoteApp:
@@ -10,14 +10,13 @@ class RemoteApp:
 
     def __init__(self):
         self.logger = Logger()
-        # self.window = Window()
         self.main_loop = MainLoop()
         self.usb = Usb()
+        self.action = Action()
         Logger.log('Init RemoteApp')
 
     def run(self):
-        self.main_loop.set_interval(self.main, 1)
-        # self.window.run()
+        self.main_loop.set_interval(self.main, .1)
 
     def find_usb_device(self):
         tty_usb = self.usb.find()
@@ -35,6 +34,8 @@ class RemoteApp:
             self.usb_active = False
         else:
             action_codes = self.usb.get_codes()
+            for code in action_codes:
+                self.action.run(code)
 
     def main(self):
         if not self.usb_active:
