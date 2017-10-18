@@ -1,33 +1,24 @@
 import os
+from lib.notify import SysNotify
 
 
 class Cmd:
-    program_name = ''
 
     def __init__(self):
-        pass
+        self.notify = SysNotify()
 
-    def get_all_commands(self):
-        return {}
+    def run(self, program):
+        self.exe(program.get_command())
+        self.show_notify(program.get_notify(), icon=program.get_icon())
 
-    def get_command(self, index):
-        cmd = self.get_all_commands()
-        if index in cmd:
-            return cmd[index]
-        return {'command': ''}
-
-    def run(self, index):
-        data = self.get_command(index)
-        self.exe(data['command'])
-        if 'notify' in data:
-            self.notify(data['notify'])
-
-    def exe(self, command):
+    @staticmethod
+    def exe(command):
         if len(command):
             os.system(command)
 
-    def activate(self):
-        self.notify(self.program_name + ' activated')
+    def activate(self, program):
+        self.show_notify(program.get_name() + ' activated ', icon=program.get_icon())
 
-    def notify(self, text):
-        print(text)
+    def show_notify(self, title, text='', icon=''):
+        if len(title):
+            self.notify.send(title, text, file_path_to_icon=icon)

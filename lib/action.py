@@ -1,10 +1,12 @@
-from lib.program.chrome import Chrome
-from lib.program.clementine import Clementine
-from lib.program.spotify import Spotify
-from lib.program.mouse import MouseCmd
-from lib.program.vlc import Vlc
-from lib.program.volume import Volume
+from lib.programs.chrome import chrome
+from lib.programs.clementine import clementine
+from lib.programs.spotify import spotify
+from lib.programs.mouse import MouseCmd
+from lib.programs.vlc import vlc
+from lib.programs.volume import volume
+from lib.program import Program
 from lib.codes import CODES
+from lib.cmd import Cmd
 
 
 class Action:
@@ -15,21 +17,28 @@ class Action:
 
     def __init__(self):
         self.init_programs()
-        self.volume = Volume()
+        self.volume = Program(volume)
+        self.cmd = Cmd()
 
     def init_programs(self):
-        self.programs.append(Clementine())
-        self.programs.append(Spotify())
-        self.programs.append(Chrome())
-        self.programs.append(Vlc())
-        self.programs.append(MouseCmd())
+        programs = [
+            clementine,
+            spotify,
+            vlc,
+            chrome,
+            # mouse
+        ]
+        for program in programs:
+            self.programs.append(Program(program))
 
-    def get_code_index(self, code):
+    @staticmethod
+    def get_code_index(code):
         if code in CODES:
             return CODES[code]
         return -1
 
-    def convert_code(self, code):
+    @staticmethod
+    def convert_code(code):
         return code.decode("utf-8")
 
     def timestamp(self):
@@ -46,18 +55,23 @@ class Action:
             self.active_program_index += 1
 
         self.active_program_index %= program_count
-        self.get_program().activate()
+        self.cmd.activate(self.get_program())
 
     def run(self, code):
         str_code = self.convert_code(code)
         code_index = self.get_code_index(str_code)
+
         if code_index < 0:
-            pass
+            return
         elif code_index < 3:
             self.change_program(code_index)
         elif code_index < 9:
-            self.get_program().run(code_index)
+            self.program_action(self.get_program(), code_index)
         elif code_index < 12:
-            self.volume.run(code_index)
+            self.program_action(self.volume, code_index)
         else:
-            self.get_program().run(code_index)
+            self.program_action(self.get_program(), code_index)
+
+    def program_action(self, program, index):
+        program.set_index(index)
+        self.cmd.run(program)
