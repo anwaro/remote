@@ -1,2 +1,0 @@
-ERROR:root:read failed: device reports readiness to read but returned no data (device disconnected or multiple access on port?)
-ERROR:root:[Errno 13] could not open port /dev/ttyUSB1: [Errno 13] Permission denied: '/dev/ttyUSB1'
