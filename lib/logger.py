@@ -1,22 +1,43 @@
 from datetime import datetime
-import logging
 
 
 class Logger:
-    LOG = 1
+    INFO = 'INFO'
+    ERROR = 'ERROR'
+
+    dir = "log/"
+    error_log_file = 'error.log'
+    system_log_file = 'system.log'
 
     @staticmethod
-    def log(msg):
-        print("[" + Logger.time() + "]: ", msg)
+    def log(msg, save=False, level=None):
+        level = Logger.INFO if level is None else level
+        Logger.log_msg(msg, Logger.system_log_file, save, level)
 
     @staticmethod
     def error(msg):
-        logging.basicConfig(filename='log/error.log', level=logging.ERROR)
         if type(msg) == list:
             for i in msg:
-                logging.error(i)
+                Logger.log_msg(i, Logger.error_log_file, True, Logger.ERROR)
         else:
-            logging.error(msg)
+            Logger.log_msg(msg, Logger.error_log_file, True, Logger.ERROR)
+
+    @staticmethod
+    def log_msg(msg, file, save, level):
+        msg = "[{}][{}]: {}".format(Logger.time(), level, msg)
+        print(msg)
+        if save:
+            Logger.write(msg, file)
+
+    @staticmethod
+    def file_path(file):
+        return Logger.dir + file
+
+    @staticmethod
+    def write(msg, file):
+        file = open(Logger.file_path(file), "a")
+        file.write(msg)
+        file.close()
 
     @staticmethod
     def time():

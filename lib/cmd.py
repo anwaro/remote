@@ -1,5 +1,6 @@
 import os
 from lib.notify import SysNotify
+from lib.logger import Logger
 
 
 class Cmd:
@@ -14,7 +15,10 @@ class Cmd:
     @staticmethod
     def exe(command):
         if len(command):
-            os.system(command)
+            try:
+                os.system(command)
+            except Exception as error:
+                Logger.error(error)
 
     def activate(self, program):
         self.show_notify(program.get_name() + ' activated ', icon=program.get_icon())
