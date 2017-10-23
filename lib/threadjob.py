@@ -2,7 +2,7 @@ import threading
 
 
 class ThreadJob(threading.Thread):
-    def __init__(self, callback, event, interval):
+    def __init__(self, callback, interval):
         """
         runs the callback function after interval seconds
 
@@ -14,7 +14,7 @@ class ThreadJob(threading.Thread):
         :type interval: int
         """
         self.callback = callback
-        self.event = event
+        self.event = threading.Event()
         self.interval = interval
         self.active = True
         super(ThreadJob, self).__init__()
