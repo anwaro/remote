@@ -27,7 +27,7 @@ class Logger:
         msg = "[{}][{}]: {}".format(Logger.time(), level, msg)
         print(msg)
         if save:
-            Logger.write(msg, file)
+            Logger.write("{}\n".format(msg), file)
 
     @staticmethod
     def file_path(file):

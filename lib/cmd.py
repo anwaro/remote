@@ -1,4 +1,4 @@
-import os
+import subprocess
 from lib.notify import SysNotify
 from lib.logger import Logger
 
@@ -14,11 +14,19 @@ class Cmd:
 
     @staticmethod
     def exe(command):
-        if len(command):
-            try:
-                os.system(command)
-            except Exception as error:
+        if not len(command):
+            return False
+
+        try:
+            process = subprocess.Popen([command], stdout=subprocess.PIPE, shell=True)
+            (out, error) = process.communicate()
+            out = out.decode("utf-8")
+            if len(out):
+                Logger.log(out)
+            if error:
                 Logger.error(error)
+        except Exception as error:
+            Logger.error(error)
 
     def activate(self, program):
         self.show_notify(program.get_name() + ' activated ', icon=program.get_icon())

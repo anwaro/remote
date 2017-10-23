@@ -8,5 +8,3 @@ volume = {
         11: {'cmd': 'pactl set-sink-volume @DEFAULT_SINK@ "+3%"', 'notify': ''},
     }
 }
-
-

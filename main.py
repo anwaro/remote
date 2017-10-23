@@ -13,7 +13,7 @@ class RemoteApp:
         self.main_loop = MainLoop()
         self.usb = Usb()
         self.action = Action()
-        Logger.log('Init RemoteApp')
+        Logger.log('Init RemoteApp', True)
 
     def run(self):
         self.main_loop.set_interval(self.main, .1)
@@ -22,8 +22,9 @@ class RemoteApp:
         tty_usb = self.usb.find()
         if tty_usb:
             try:
-                self.usb.setup(tty_usb)
-                self.usb_active = True
+                success = self.usb.setup(tty_usb)
+                if success:
+                    self.usb_active = True
             except Exception as error:
                 Logger.error(error)
 

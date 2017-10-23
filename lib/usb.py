@@ -1,4 +1,5 @@
 from lib.signal import Signal
+from time import time
 import os
 
 
@@ -11,14 +12,25 @@ class Usb:
 
     action_codes = []
     errors = []
+    last_setup_time = 0
+    setup_interval = 1.5
 
     def __init__(self):
         self.ls_and_grep_cmd = self.ls_and_grep_cmd.format(self.dir, self.usb_pattern)
 
     def setup(self, usb_name):
-        self.usb_name = usb_name
-        self.signal = Signal(self.tty_usb_name(), self)
-        self.signal.start()
+        if self.last_setup():
+            self.last_setup_time = time()
+            self.usb_name = usb_name
+            self.signal = Signal(self.tty_usb_name(), self)
+            self.signal.start()
+            return True
+        return False
+
+    def last_setup(self):
+        if time() - self.last_setup_time > self.setup_interval:
+            return True
+        return False
 
     def tty_usb_name(self):
         return self.dir + "/" + self.usb_name
