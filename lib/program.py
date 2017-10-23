@@ -1,5 +1,4 @@
-import sys
-import os
+from lib.helper import Helper
 
 
 class Program:
@@ -21,7 +20,7 @@ class Program:
 
     def get_icon(self):
         if len(self.icon):
-            return os.path.dirname(sys.argv[0]) + "/icon/" + self.icon
+            return Helper.app_path() + "/icon/" + self.icon
         return ''
 
     def get_item(self):

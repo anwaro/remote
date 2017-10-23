@@ -33,4 +33,7 @@ class Cmd:
 
     def show_notify(self, title, text='', icon=''):
         if len(title):
-            self.notify.send(title, text, file_path_to_icon=icon)
+            try:
+                self.notify.send(title, text, file_path_to_icon=icon)
+            except Exception as error:
+                Logger.error(error)

@@ -1,4 +1,5 @@
 from datetime import datetime
+from lib.helper import Helper
 
 
 class Logger:
@@ -31,7 +32,7 @@ class Logger:
 
     @staticmethod
     def file_path(file):
-        return Logger.dir + file
+        return Helper.app_path() + "/" + Logger.dir + file
 
     @staticmethod
     def write(msg, file):
